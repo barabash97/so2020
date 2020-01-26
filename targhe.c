@@ -9,8 +9,6 @@
 
 int main(int argc, char * argv[]){
 
-	int N;
-	N = atoi(argv[1]);
 	int pid[MAX];
 	int status;
 	printf("\n\n\n\n");
