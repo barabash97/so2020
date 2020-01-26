@@ -4,77 +4,74 @@
 
 typedef char Stringa[30];
 
-typedef struct 
-{
-	Stringa nome;
-	float media;
+typedef struct {
+    Stringa nome;
+    float media;
 } record_binario;
 
-void creaBinarioNegativo(){
-	FILE *fp = fopen("nomi.txt", "r");
-	FILE *fp2 = fopen("persone.dat", "ab");
-	int a1,a2,a3;
-	Stringa nome;
-	int count, somma = 0;
-	float media;
-	if(fp == NULL){
-		printf("file non esiste\n");
-		exit(0);
-	}
+void creaBinarioNegativo() {
+    FILE *fp = fopen("nomi.txt", "r");
+    FILE *fp2 = fopen("persone.dat", "wb");
 
-	while(!feof(fp)){
-		record_binario rb;
-		 count = 0;
-		 media = 0;
-		 somma = 0;
-		fscanf(fp, "%s %d %d %d\n", nome, &a1,&a2,&a3);
+    Stringa nome;
 
-		if(a1 < 0){
-			somma += a1;
-			count++;
-		}
+    if (fp == NULL) {
+        printf("file non esiste\n");
+        exit(0);
+    }
 
-		if(a2 < 0){
-			somma += a2;
-			count++;
-		}
+    while (!feof(fp)) {
+        int count = 0;
+        int somma = 0;
+        int a1, a2, a3 = 0;
+        fscanf(fp, "%s %d %d %d\n", nome, &a1, &a2, &a3);
 
-		if(a3 < 0){
-			somma += a3;
-			count++;
-		}
+        if (a1 < 0) {
+            somma += a1;
+            count++;
+        }
 
-		media = somma / count;
+        if (a2 < 0) {
+            somma += a2;
+            count++;
+        }
 
-		strcpy(rb.nome, nome);
-		rb.media = media;
+        if (a3 < 0) {
+            somma += a3;
+            count++;
+        }
 
-		fwrite(&rb, sizeof(rb), 1, fp2);
+        if (count > 0) {
+            record_binario rb;
+            strcpy(rb.nome, nome);
+            rb.media = (float) (somma / count);
+            fwrite(&rb, sizeof(rb), 1, fp2);
+        }
+    }
 
-	}
-
-	fclose(fp);
-	fclose(fp2);
+    fclose(fp);
+    fclose(fp2);
 }
 
-void leggiBinario(){
-	FILE *fp = fopen("persone.dat", "rb");
-	if(fp == NULL){
-		printf("file non esiste\n");
-		exit(0);
-	}
-	printf("\nSTAMPA\n\n\n");
-	while(!feof(fp)){
-		record_binario rb;
+void leggiBinario() {
+    FILE *fp = fopen("persone.dat", "rb");
+    if (fp == NULL) {
+        printf("file non esiste\n");
+        exit(0);
+    }
+    printf("\nSTAMPA\n\n\n");
+    while (!feof(fp)) {
+    
+        record_binario rb;
+        fread(&rb, sizeof(rb), 1, fp);
+        printf("%s %.2f\n", rb.nome, rb.media);
+    }
 
-		fread(&rb, 1, sizeof(rb), fp);
-		printf("%s %f\n", rb.nome, rb.media);
-	}
-
-	fclose(fp);
+    fclose(fp);
 }
-int main(){
-	creaBinarioNegativo();
-	leggiBinario();
-	return 0;
+
+int main() {
+    creaBinarioNegativo();
+    leggiBinario();
+    return 0;
 }
