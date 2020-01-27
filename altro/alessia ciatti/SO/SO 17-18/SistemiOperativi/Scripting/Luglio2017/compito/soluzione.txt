@@ -1,0 +1,306 @@
+
+
+Compito Pari
+============
+ 
+Gestione della memoria: Working Set
+-----------------------------------
+
+1. Fase 2, quant'è la taglia del WS a regime?
+60
+
+2. Transitorio tra fasi 1 e 2. Quanti istanti devono trascorrere perché WS arrivi regime? Spiega. 
+60. A regime WS contiene oltre alle 20 pagine di A tutte le pagine di B che sono 40. 
+Nel tempo queste sono omogeneamente accedute assieme a quelle di A. Per cui quando ho acceduto a tutte le pagine di B ho anche
+acceduto a tutte le pagine di A, questo avviene in circa 60 istanti. 
+
+3. Fase 3, quant'è la taglia del WS a regime?
+70
+
+4. Transitorio tra fasi 2 e 3. Quanti istanti devono trascorrere perché WS arrivi regime? Spiega 
+100, poiché a regime solo le pagine di A e C sono presenti nel WS, gli accessi alle pagine di B devono uscire dalla 
+finestra temporale che è grande delta=100.
+
+5. Transitorio tra fasi 2 e 3. Qual'è la taglia massima raggiunta dal WS durante il transitorio? A che istante si raggiunge? Spiega
+90, e si raggiunge a circa t=670. Infatti, in tale istante tutte le 50 pagine di C sono state accedute assieme alle 20 di A, 
+ma nella finestra ci sono ancora 30 accessi della fase 2. Di questi accessi 2/3 (40/60) 
+sono a pagine di B, per cui 20 pagine di B sono pure nel WS, totale 90.
+
+6. Fase 4. Qual'è la taglia del WS durante la fase 4? Spiega
+La fase 4 è troppo piccola perché si possano dimenticare gli accessi a C, per cui la taglia di WS sarà la stessa della
+fase 3, cioè 70.
+
+
+
+
+I/O e interazioni tra processi
+------------------------------
+
+1. Supponi che il sistema abbia uno scheduler del disco tipo elevator senza particolari accortezze, quali processi sarebbero avvantaggiati e perché?
+
+I processi C e D che effettuano molte scritture non hanno necessità di attendere che la scrittura termini per generare nuove scritture. A e B generano molte letture ma ciascuna lettura deve attendere il completamento della precedente.
+Si tratta del problema write-starving-read. I processi che effettuano letture (scritture) consecutive sono leggermente avvantaggiati dallo scheduler del disco. Tuttavia tale fenomeno è marginale rispetto al write-starving-read. 
+
+2. che tipo di accortezze possono essere prese, a livello di scheduler del disco per migliorare la fairness del sistema?
+
+Un tipico approccio è quello di attendere, dopo una read, alcuni millisecondi per l'arrivo di un'altra read prima di passare a servire una write. Tale approccio è detto "anticipatorio". Tale approccio è complementare alla tecnica 
+read-haed che può essere realizzata nel filesystem: se dopo una read il processo genera subito una nuova read allora possiamo euristicamente dedurre che siamo in presenza di una lettura sequenziale e quindi si generano le read per lo scheduler prima che il processo le generi effettivamente. 
+
+
+Sequenza degli eventi nel SO
+----------------------------
+
+t(ms): evento
+
+inizia con C running, A in blocco e B in blocco
+20: input per I/O, B diventa ready e quindi running per la politica di scheduling
+40: input per I/O, A diventa ready e quindi running per la politica di scheduling
+40: system call bloccante, A va in blocco, B diviene running
+50: major page fault, B va in blocco, C diviene running
+
+
+Espressioni regolari
+--------------------
+
+grep '^[BCDFGHJKLMNPQRSTVXYZ].*[.:] .. .*;$' toBe.txt
+
+
+Awk
+---
+
+#!/bin/bash
+cat voti.txt | awk '
+    {
+        s = 0; min=9999; max=0; 
+        for(i=2; i<= NF; i++) {
+            s+=$i
+            if ($i<min) min=$i
+            if ($i>max) max=$i
+        } 
+        MIN[$1] = min
+        MAX[$1] = max
+        AVG[$1] = s/(NF-1)
+    }
+END {
+    for( a in AVG ) 
+        if (AVG[a]>24)
+            print a, MIN[a], MAX[a]
+    }
+
+
+GDB
+---
+
+vedi compito dispari
+
+Compito Dispari
+===============
+
+Gestione della memoria: Working Set
+-----------------------------------
+
+
+1. Fase 2, quant'è la taglia del WS a regime?
+90
+
+2. Transitorio tra fasi 1 e 2. Quanti istanti devono trascorrere perché WS arrivi regime? Spiega. 
+90. A regime WS contiene oltre alle 40 pagine di B tutte le pagine di C che sono 50. 
+Nel tempo queste sono omogeneamente accedute assieme a quelle di B. Per cui quando ho acceduto a tutte le pagine di 
+C ho anche acceduto a tutte le pagine di B, questo avviene in circa 90 istanti.
+
+3. Fase 3, quant'è la taglia del WS a regime?
+60
+
+4. Transitorio tra fasi 2 e 3. Quanti istanti devono trascorrere perché WS arrivi regime? Spiega 
+100, poiché a regime solo le pagine di A e B sono presenti nel WS, gli accessi alle pagine di C devono uscire dalla 
+finestra temporale che è grande delta=100.
+
+5. Transitorio tra fasi 2 e 3. Qual'è la taglia massima raggiunta dal WS durante il transitorio? A che istante si raggiunge? Spiega
+Circa 93 e viene raggiunta per circa t=810. Infatti, in tale istante tutte le 50 pagine di C sono ancora nel WS 
+assieme alle 40 di B. Ma nella finestra ci sono già 10 accessi della fase 3. Di questi accessi 1/3 (20/60)  
+sono a pagine di A, circa 3 accessi. Queste pure sono nel WS per un totale di circa 93.
+
+6. Fase 4. Qual'è la taglia del WS durante la fase 4? Spiega
+delta=100 perché la somma delle taglie di A B e C è maggiore di delta. Di fatto non si andrà mai a regime perché delta è troppo piccolo. 
+
+I/O: read vs. write
+-------------------
+
+1.Le system call read e write sono bloccanti o no? Descrivi il loro comportamento motivando. 
+
+Le read sono normalmente bloccanti poiché il processo ha bisogno dei dati letti per continuare. Le write normalmente non sono bloccanti perché il processo può continuare a fare altro mentre i dati sono bufferizzati prima della effettiva scrittura.
+
+
+2.Quando una read o una write viene effettivamente conclusa dal disco si genera un interrupt. Cosa fa l'interrupt handler nel caso della read? e nel caso della write?
+
+Nel caso di read i dati vengono copiati nel buffer del processo e questo viene fatto passare da blocco a ready.
+Inoltre viene fatto partire lo scheduler del disco per eseguire eventuali altre operazioni in coda. 
+Nel caso della write si fa solo partire lo scheduler poiché il processo normalmente non è in attesa di informazioni circa l'operazione di scrittura.
+
+3.Read e write hanno comportamenti molto diversi per quanto riguarda la fairness rispetto agli altri processi. Spiega.
+
+Il fatto che la read sia bloccante implica che i processi devono attendere la conclusione di ciascuna read prima di poter eseguire la successiva. Questo non avviene per le write che quindi vengono prodotte molto più velocemente. Da cui il problema detto write-starving-reads in cui processi che effettuano molte read sono molto svantaggiati rispetto a quelli che effettuano molte write.
+
+
+Sequenza degli eventi nel SO
+----------------------------
+
+t(ms): evento
+
+inizia con C running, A in blocco e B in blocco
+10: input per I/O, A diventa ready e quindi running per la politica di scheduling
+30: input per I/O, B diventa ready A rimane running.
+50: major page fault, A va in blocco, B diviene running
+50: system call bloccante, B va in blocco, C diviene running
+
+Espressioni regolari
+--------------------
+
+egrep '^[^ ]{1,3} .* of [aeiouAEIOU].*,$' toBe.txt
+
+
+Awk
+---
+
+#!/bin/bash
+cat voti.txt | awk '
+    {
+        s = 0; max=0; 
+        for(i=2; i<= NF; i++) {
+            s+=$i
+            if ($i>max) max=$i
+        } 
+        MAX[$1] = max
+        AVG[$1] = s/(NF-1)
+    }
+END {
+    for( a in AVG ) 
+        if (MAX[a]>23)
+            print a, AVG[a]
+    }
+    
+GDB
+---
+
+
+pizzonia@pisolo$ gcc -Wall -g fattoriale.c -o fattoriale
+
+------ ~/my/teaching/2016-2017_tutti_i_corsi/2016-2017_sistemi_operativi/appellodesame_2017-06-26/compito e voti appellodesame_2017-06-26/compito/preparazione/gdb
+pizzonia@pisolo$ gdb fattoriale 
+GNU gdb (Ubuntu 7.7.1-0ubuntu5~14.04.2) 7.7.1
+Copyright (C) 2014 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+<http://www.gnu.org/software/gdb/documentation/>.
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from fattoriale...done.
+(gdb) b fact_iter
+Breakpoint 1 at 0x4005bd: file fattoriale.c, line 18.
+(gdb) r 10
+Starting program: /home/pizzonia/myPrivate/teaching/so/appellodesame_2017-06-26/compito/preparazione/gdb/fattoriale 10
+[10]
+
+Breakpoint 1, fact_iter (n=10) at fattoriale.c:18
+18          unsigned int k, r=2;
+(gdb) p r
+$1 = 32767
+
+#
+# ATTENZIONE r non e' ancora stata inizializzata, il watchpoint fermerebbe nell'istante dell'inizializzazione!
+#
+
+(gdb) n
+19          for (k = 2; k <= n; ++k) {
+(gdb) p r
+$2 = 2
+
+#
+# ora r e' inizializzata e ha senso imporre il watchpoint
+#
+
+
+(gdb) watch r>100
+Hardware watchpoint 2: r>100
+(gdb) info br
+Num     Type           Disp Enb Address            What
+1       breakpoint     keep y   0x00000000004005bd in fact_iter at fattoriale.c:18
+        breakpoint already hit 1 time
+2       hw watchpoint  keep y                      r>100
+(gdb) c
+Continuing.
+Hardware watchpoint 2: r>100
+
+Old value = 0
+New value = 1
+fact_iter (n=10) at fattoriale.c:19
+19          for (k = 2; k <= n; ++k) {
+(gdb) p r
+$3 = 240
+(gdb) p k
+$4 = 5
+(gdb) bt
+#0  fact_iter (n=10) at fattoriale.c:19
+#1  0x0000000000400651 in main (argc=2, argv=0x7fffffffd218) at fattoriale.c:33
+(gdb) b 13
+Breakpoint 3 at 0x4005b1: file fattoriale.c, line 13.
+(gdb) info br
+Num     Type           Disp Enb Address            What
+1       breakpoint     keep y   0x00000000004005bd in fact_iter at fattoriale.c:18
+        breakpoint already hit 1 time
+2       hw watchpoint  keep y                      r>100
+        breakpoint already hit 1 time
+3       breakpoint     keep y   0x00000000004005b1 in fact_rec at fattoriale.c:13
+(gdb) help condition
+Specify breakpoint number N to break only if COND is true.
+Usage is `condition N COND', where N is an integer and COND is an
+expression to be evaluated whenever breakpoint N is reached.
+(gdb) condition 3 r>100
+(gdb) c
+Continuing.
+
+Watchpoint 2 deleted because the program has left the block in
+which its expression is valid.
+0x0000000000400651 in main (argc=2, argv=0x7fffffffd218) at fattoriale.c:33
+33          printf("iter: %u\n", fact_iter(n));
+
+#
+# Questo non e' il breakpoint, ma il debugger ci dice che ha disabilitato il watchpoint perche' l'esecuzione
+# sta abbandonando lo scope in cui e' definito.
+#
+
+(gdb) c
+Continuing.
+iter: 7257600
+
+Breakpoint 3, fact_rec (n=5) at fattoriale.c:13
+13          return r;
+(gdb) bt
+#0  fact_rec (n=5) at fattoriale.c:13
+#1  0x00000000004005a4 in fact_rec (n=6) at fattoriale.c:10
+#2  0x00000000004005a4 in fact_rec (n=7) at fattoriale.c:10
+#3  0x00000000004005a4 in fact_rec (n=8) at fattoriale.c:10
+#4  0x00000000004005a4 in fact_rec (n=9) at fattoriale.c:10
+#5  0x00000000004005a4 in fact_rec (n=10) at fattoriale.c:10
+#6  0x000000000040066c in main (argc=2, argv=0x7fffffffd218) at fattoriale.c:34
+(gdb) p n
+$5 = 5
+(gdb) p r
+$6 = 120
+(gdb) frame 3
+#3  0x00000000004005a4 in fact_rec (n=8) at fattoriale.c:10
+10              unsigned int i = fact_rec(n-1);
+(gdb) p n
+$7 = 8
+(gdb) p r
+$8 = 4154574088
+(gdb) 
+
+

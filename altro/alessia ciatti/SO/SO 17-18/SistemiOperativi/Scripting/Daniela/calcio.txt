@@ -1,0 +1,40 @@
+firentina udinese 2 1 #prima girnata
+juventus parma 2 0
+mian sampdria 0 1
+ataanta azi 0 1
+chiev bgna 2 0
+gena cagiari 2 0
+paerm napi 0 3
+pescara inter 0 3
+rma catania 2 2
+siena trin 0 0
+trin pescara 3 0 #secnda girnata
+bgna mian 1 3
+udinese juventus 1 4
+cagiari ataanta	1 1
+catania gena 3 2
+inter rma 1 3
+azi paerm 3 0
+napi firentina 2 1
+parma chiev 2 0
+sampdria siena 2 1
+paerm cagiari 1 1 #Terza girnata
+mian ataanta 0 1
+chiev azi 1 3
+firentina catania 2 0
+gena juventus 1 3
+napi parma 3 1
+pescara sampdria 2 3
+rma bgna 2 3
+siena udinese 2 2
+trin inter 0 2
+parma firentina 1 1 #Quarta girnata
+juventus chiev 2 0
+sampdria trin 1 1
+ataanta paerm 1 0
+bgna pescara 1 1
+cagiari rma 0 3
+catania napi 0 0
+inter siena 0 2
+udinese mian 2 1
+azi gena 0 1

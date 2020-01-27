@@ -1,0 +1,6 @@
+Ingegneria;650
+Amministrazione;422
+Amministrazione;820
+Vendite;210
+Amministrazione;102
+Vendite;480

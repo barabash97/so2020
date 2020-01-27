@@ -1,0 +1,134 @@
+TEORIA SISTEMI OPERATIVI
+
+KERNEL:
+	Il kernel è la parte centrale del sistema operativo, si occupa di mettere in comunicazione hardware e software.
+	Esistono quattro tipi di kernel:
+		Monolitico: E' un kernel molto grande, che comprende tutte le funzioni essenziali del sistema operativo. 
+		Micro-kernel: E' un kernel molto più snello, contiene soltanto poche funzioni, e possiede primitive di messagge passing
+		Ibrido: Simili al micro-kernel, ma hanno componenti in kernel space, per questioni di efficienza
+		Exo-kernel: non fornisce livelli di astrazione con l'HW, ma  fornisce primitive per la comunicazione diretta con le applicazioni 			dell'HW
+
+PROCESSI:
+	Un processo è una attività controllata da un programma che si svolge su un processore, in particolare rappresenta come il programma si evolve nel tempo.
+	Possiede tre stati:
+		Running: Il programma è in esecuzione
+		Ready: Il programma è pronto, in attesa che il processore si liberi
+		Waiting: Il programma è in attesa di qualche evento esterno (esempio: dati in input ecc.)
+
+	Esistono due modi per ottimizzare l'esecuzione di più processi:
+		Multiprogramming: parallelismo simulato, il processore esegue in sequenza più processi
+		Multiprocessing: più processori (core) si dividono i compiti e li eseguono contemporaneamente
+		A volte questo può creare problemi di concorrenza tra i processi (quando ad esempio si vuole accedere ad una stessa risorsa),
+		si parla quindi di race condition. E' compito del sistema operativo gestire ed evitare questo tipo di conflitto.
+
+		Un processo ha due proprietà:
+			Safety: Un processo non deve interferire con l'esecuzione di un altro
+			Liveness: I meccanismi di sincronizzazione non devono interferire con l'esecuzione di un processo
+
+	DEADLOCK: 
+		Il deadlock è un problema che viene a crearsi quando due processi sono in attesa circolare:
+			Sia P1 e P2 hanno bisogno di due risorse R1 e R2, il sistema assegna R1 a P1 ed R2 a P2: a questo punto si trovano entrambi in attesa, senza possibilità di proseguire.
+		E' una condizione definitiva e complessa da risolvere. Collegato al deadlock c'è anche un nuovo problema: se, considerando il caso di prima, ci fosse un terzo processo P3 in attesa di R1 e R2, sarebbe bloccato, e detto in "starvation".
+
+		Il compito di gestire l'avvicendamento dei processi è affidato allo Scheduler.
+
+	SCHEDULING:
+		Quando avviene un interrupt, avviene un Mode Switching: si passa dalla modalità di esecuzione alla modalità di supervisione, il processo invece subisce un context switching: i suoi dati vengono copiati e salvati nel PCB (process control block), mentre il processo che deve essere eseguito fa il percorso inverso.
+
+		CLASSI DI SCHEDULER:
+			Long term scheduler: seleziona quali processi creare fra quelli che non hanno ancora iniziato la loro esecuzione
+			Mid term scheduler: gestisce i processi bloccati da molto
+			Short term scheduler: seleziona quali processi creare fra quelli in stato di ready
+
+	THREAD:
+		E' l'unità di base della CPU, ed è associato ad un processo. Ogni thread possiede:
+			- La propria copia dello stato del processore
+			- Un proprio program counter
+			- Un proprio stack
+
+		Thread appartenenti allo stesso processo condividono codice, dati e risorse di I/O.
+		La tecnica del threading è largamente utilizzata, in quanto è molto meno oneroso operare su thread che su processi interi (quindi operazioni di context switching, creazione di un nuovo thread ecc.)
+
+		Esistono due tipologie di thread:
+			Kernel Thread: La creazione, lo scheduling e la gestione del thread sono implementati a livello kernel. Il vantaggio più grande è che se un thread rimane in attesa di input I/O (un processo bloccante), può essere selezionato un altro thread che può essere eseguito nel frattempo, tuttavia è meno efficiente rispetto allo user thread.
+			User Thread: La creazione, lo scheduling e la gestione del thread sno affidati ad una Thread Library, il kernel non deve mai intervenire. Il vantaggio più grande è l'efficienza, ma a differenza del kernel thread, una richiesta bloccante di un thread può bloccare l'intero processo.
+
+	MODELLI DI MULTI-THREADING:
+		Many-To-One: Molti user thread vengono assegnati ad un kernel thread, generalmente adottato da sistemi che non supportano kernel thread multipli
+		One-To-One: Ogni user thread associato ad un kernel thread diverso
+		Many-To-Many: Riassume i benefici di entrambi i metodi precedenti.
+
+	TIPI DI SCHEDULER:
+		Un processo è soggetto a context switching se:
+			1) Passa dallo stato di running allo stato di waiting
+			2) Passa dallo stato di running allo stato di ready
+			3) Passa dallo stato di waiting allo stato di ready
+			4) Termina un processo
+
+		Gli scheduler vengono detti Non-PreEmptive se applicano context switching solo nei casi 1 e 4, PreEmptive se invece lo applicano a tutti e 4 i casi (sono anche quelli più moderni)
+
+		POLITICHE DI SCHEDULING:
+			First come, First served: Il primo che arriva, viene servito.
+			Shortest-Job First: Vengono eseguiti prima i processi che richiedono più forti, ma nella pratica è irrealizzabile
+			Round Robin: Ogni processo non può rimanere in esecuzione per più di una durata definita, è presente quindi un timer, e i processi vengono eseguiti a turno. Il timer deve essere tarato correttamente, in caso in cui il tempo definito sia troppo breve o troppo lungo, risulterebbe inefficiente
+
+		PRIORITA':
+			Statica: Non cambia durante la vita di un processo
+			Dinamica: Cambia durante la vita di un processo
+			Aging: Aumenta in base alla vita del processo
+
+DEADLOCK:
+	Classi di risorse:
+		Risorsa Statica: risorsa assegnata all'inizio, viene rilasciata al termine dell'esecuzione
+		Risorsa dinamica: risorsa che può essere assegnata più volte durante l'esecuzione, rilasciata quando non è più necessaria
+
+	Una richiesta può essere bloccante (avviene una sospesione se non è immediatamente disponibile) o non bloccante.
+
+	Una risorsa può essere detta Prerilasciabile, se può essere sottrata ad un processo quando questo è ancora in esecuzione, e senza che questo la abbia effettivamete rilasciata.
+
+	Una risorsa è seriale se non può essere assegnata a più processi contemporaneamente.
+
+	Le condizioni affinché avvenga un DEADLOCK sono 4:
+		- Mutua esclusione: le rirosrse coinvonte devono essere seriali
+		- Assenza di prerilascio: le risorse coinvolte non possono essere prerilasciate
+		- Richieste bloccanti: le richieste delle risorse sono bloccanti
+		- Attesa circolare: tale per cui esistono n Processi, il processo P1 ha bisogno di una risorsa in possesso di P2, Pn-1 ha bisogno di una risorsa posseduta da Pn, e Pn ha bisogno di una risorsa in possesso di P1
+
+	METODI DI GESTIONE DEI DEADLOCK:
+		Deadlock detection and recovery:
+			Il sistema può avere deadlocks, e vengono riconosciute tramite il teorema di Holt: se in un grafo di Holt è presente un knot, viene rilevata una deadlock (un knot è presente se ogni nodo del grafo ha nel proprio insieme di raggiungibilità tutti gli altri nodi).
+
+			Una volta che la deadlock viene rilevata, va risolta, in modo manuale (viene notificata all'utente), o automatico (se ne occupa il sistema in automatico).
+
+			Meccanismi di recovery:
+				Terminazione totale: vengono terminati tutti i processi coinvolti
+				Terminazione parziale: viene terminato un processo alla volta, fino a che la deadlock non scompare
+				Preemption: una risorsa viene sottratta a uno o più processi coinvolti
+
+				Checkpoint/Rollback: viene salvato periodicamente lo stato dei processi (checkpoint), in caso di deadlock si torna allo stato precedente di uno o più processi (rollback).
+
+				Terminare processi può essere però costoso, e fare preemption non è sempre possibile
+
+		Deadlock Prevention/Avoidance:
+			Vengono "attaccate" le quattro condizioni di deadlock: 
+				La condizione di mutua esclusione, grazie allo spooling: un'immagine della risorsa viene posta in buffer, dove rimane in attesa di essere assegnata, c'è l'apparenza di condivisione da parte dei processi.
+
+				La condizione di richiesta bloccante (Allocazione totale) :si chiede ad un processo di richiedere tutta le risorse necessarie immediatamente. Questo non è sempre semplice, perché spesso le risorse da richiedere non sono definite subito, questo elimina anche il parallelismo.
+
+				La condizione di assenza di prerilascio, anche se non è sempre possibile.
+
+				La condizione di attesa circolare (Allocazione gerarchica): si assegnano delle priorità alle risorse, un processo può richiedere risorse solo a priorità maggiore di quelle che possiede in quel momento, se vuole una risorsa con priorità minore deve rilasciare quella (o quelle) che ha al momento
+
+				Questi sistemi però, in particolare allocazione totale e gerarchica, sono inefficienti.
+
+			Deadlock Avoidance:
+				Si basa sull'algoritmo del banchiere, e sull'assunto che non tutti i processi avranno bisogo della stessa risorsa allo stesso momento.
+				Il banchiere (lo scheduler), deve condividere il proprio capitale (le risorse), con un numero definito di utenti (i processi).
+				Ogni cliente può effettuare due operazioni: richiesta e restituzione, specifica all'inizio di quanto ha bisogno.
+				Il denaro prestato ad ogni cliente non può eccedere la necessità specificata inizialmente, ogni cliente può fare richieste multiple (fino al massimo specificato), il cliente deve garantire la restituzione in un tempo finito.
+				Il banchiere deve essere in grado di soddisfare le richieste del cliente, o immediatamente o in un tempo finito.
+
+
+		Ostrich algorithm (Algoritmo dello struzzo):
+			Semplicemente le deadlocks vengono ignorate, facendo finta che non possano verificarsi, questo perché è oneroso gestirle.
+			E' l'algoritmo più utilizzato

@@ -1,0 +1,7 @@
+Nell'esercizio sul debugging, il comando di esempio 
+gdb test
+dovrebbe essere in realtà
+gdb divisione
+
+
+ 

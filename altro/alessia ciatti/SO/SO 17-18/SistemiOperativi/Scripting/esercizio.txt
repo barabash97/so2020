@@ -1,0 +1,42 @@
+fughe
+coda
+bada
+MAIUSCOLE
+a1
+a2
+a3
+a4
+a5
+a6
+a7
+a8
+a9
+stringa
+stringato
+costringa
+ac
+abc
+abbc
+abbbc
+file.txt
+ciao a *
+exit 
+^_^
+a^
+done
+matr 543672
+matr 543321
+matr 523455
+tel 0801234567
+prefix 080
+a
+b
+bc
+bcc
+bccc
+bcbcbc
+bacbc
+bac
+acc
+caa
+acac

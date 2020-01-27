@@ -1,0 +1,9 @@
+Impiegato1 -2 -25 -18 -27 19 -23
+Impiegato2 -18 -19 -23 -18 -20 -21 
+Impiegato4 23 -22 25 9 30 29
+Impiegato5 -11 -22 -25 -24 -22 -23
+Impiegato6 -23 -29 -10 -30 -24 -29
+Impiegato7 22 18 27 18 19 28
+Impiegato8 -29 -30 -22 -12 23 24
+
+

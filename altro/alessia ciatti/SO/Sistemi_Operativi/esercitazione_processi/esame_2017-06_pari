@@ -1,0 +1,21 @@
+#!/bin/bash
+ 
+   {
+        s = 0; min=9999; max=0; 
+        for(i=2; i<= NF; i++) {
+            s+=$i
+            if ($i<min) min=$i
+            if ($i>max) max=$i
+        } 
+        MIN[$1] = min
+        MAX[$1] = max
+        AVG[$1] = s/(NF-1)
+    }
+END {
+    for( a in AVG ) 
+        if (AVG[a]>24)
+            print a, MIN[a], MAX[a]
+    }
+
+
+GDB
