@@ -133,10 +133,7 @@ int main() {
     creaBinarioNegativo();
     leggiBinario();
     return 0;
-}Mike 12 -16 90
-Carl 23 -40 -42
-John 18 5 40
-Bob -90 12 15#include <stdio.h>
+}#include <stdio.h>
 #include <string.h>
 
 typedef char string[30];

@@ -1,0 +1,854 @@
+#!/usr/bin/awk -f
+
+BEGIN{
+printf("Calcolo media stipendi negativi per mese:\n")
+}
+
+{
+for(i=2;i<=NF;i++){
+if($i<0){
+somma[i] += $i
+count[i] ++
+media[i] = somma[i]/count[i]
+}
+}
+}
+
+END{
+for(i in media){
+if(i == 2){
+mese = "Gennaio"
+}
+if(i == 3){
+mese = "Febbraio"
+}
+if(i == 4){
+mese = "Marzo"
+}
+if(i == 5){
+mese == "Aprile"
+}
+if(i == 6){
+mese == "Maggio"
+}
+if(i == 7){
+mese == "Giugno"
+}
+printf("%s media: %0.1f valori contati:%d\n", mese, media[i], count[i])
+}
+}#!/usr/awk/bin -f 
+
+BEGIN{
+printf("Calcolo media stipendi per dipendente:\n");
+}
+
+{
+for(i=2;i<=NF;i++){
+if($i<0){
+somma[$1] += $i
+count[$1] ++
+media[$1] = somma[$1]/count[$1]
+}
+}
+}
+
+END{
+for(i in media){
+printf("La media degli stipendi negativi di %s è di:  %0.1f\n", i, media[i])
+}
+}#!/usr/bin/awk -f
+
+BEGIN{
+printf("Calcolo media stipendi negativi per mese:\n")
+}
+
+{
+for(i=2;i<=NF;i++){
+if($i<0){
+somma[i] += $i
+count[i] ++
+media[i] = somma[i]/count[i]
+}
+}
+}
+
+END{
+for(i in media){
+if(i == 2){
+mese = "Gennaio"
+}
+if(i == 3){
+mese = "Febbraio"
+}
+if(i == 4){
+mese = "Marzo"
+}
+if(i == 5){
+mese == "Aprile"
+}
+if(i == 6){
+mese == "Maggio"
+}
+if(i == 7){
+mese == "Giugno"
+}
+printf("%s media: %0.1f valori contati:%d\n", mese, media[i], count[i])
+}
+}#!/usr/awk/bin -f 
+
+BEGIN{
+printf("Calcolo media stipendi per dipendente:\n");
+}
+
+{
+for(i=2;i<=NF;i++){
+if($i<0){
+somma[$1] += $i
+count[$1] ++
+media[$1] = somma[$1]/count[$1]
+}
+}
+}
+
+END{
+for(i in media){
+printf("La media degli stipendi negativi di %s è di:  %0.1f\n", i, media[i])
+}
+}#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/wait.h>
+#include <signal.h>
+
+#define MAX 10
+void signalHandler(int sig){
+	if(SIGUSR1 == sig){
+		printf("PROCESSO ATTIVATO %d \n", getpid());
+	} else {
+		printf("processo non attivato %d \n", getpid());
+	}
+	exit(0);
+}
+
+int main(int argc, char * argv[]){
+	int N,i;
+	int pid[MAX];
+	int status;
+	char c;
+	if(argv[1] == NULL){
+		printf("sintassi errata\n");
+		exit(0);
+	}
+
+	N = atoi(argv[1]);
+
+	for(i = 0; i < N; i++){
+
+		pid[i] = fork();
+
+		if(pid[i] < 0){
+			perror("Errore pid\n");
+			exit(0);
+		}
+
+		if(pid[i] == 0){
+				signal(SIGUSR1, signalHandler);
+				signal(SIGUSR2, signalHandler);
+				pause();
+		} else {
+			
+			printf("Creato processo figlio %d\n", pid[i]);
+			printf("Vuoi attivare il processo figlio y/Y?\n");
+			c = getchar();
+
+			if(c == 'y' || c=='Y'){
+				kill(pid[i], SIGUSR1);
+			} else {
+				kill(pid[i], SIGUSR2);
+			}
+
+			c = getchar();
+
+			wait(&status);
+		}
+
+	}
+
+}#include <sys/wait.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <signal.h>
+
+
+
+
+int main(int argc, char * argv[]){
+
+	int pid;
+	int status;
+
+	pid = fork();
+
+	if(pid == 0){
+		printf("Figlio con processo %d.\n", getpid());
+		exit(31);
+	} else {
+		pid = wait(&status);
+		printf("Terminato processo %d del padre %d con stato di terminazione %d.\n",
+			pid, getpid(), WEXITSTATUS(status));
+	}
+
+	return 0;
+}#include <sys/wait.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <signal.h>
+
+#define MAX 10
+
+int main(int argc, char * argv[]){
+
+	int pid[MAX];
+	int status;
+	printf("\n\n\n\n");
+	for(int i = 1; i < argc && i < MAX; i++){
+		pid[i] = fork();
+
+		if(pid[i] < 0){
+			perror("Errore creazione processo\n");
+			exit(0);
+		}
+
+		if(pid[i] == 0){
+			int targa = atoi(argv[i]);
+
+			if(targa > 0 && targa <= 90){
+				printf("Codice valido associato %d : %d.\n", getpid(), targa);
+			}
+
+			exit(0); 
+		} else {
+			wait(&status);
+			printf("%d : creato figlio %d\n", getpid(), pid[i]);
+
+			
+		}
+	}
+
+}#include <sys/wait.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <signal.h>
+
+#define MAX 10
+
+int main(int argc, char * argv[]){
+
+	int pid[MAX];
+	int status;
+	printf("\n\n\n\n");
+	for(int i = 1; i < argc && i < MAX; i++){
+		pid[i] = fork();
+
+		if(pid[i] < 0){
+			perror("Errore creazione processo\n");
+			exit(0);
+		}
+
+		if(pid[i] == 0){
+			int targa = atoi(argv[i]);
+
+			if(targa > 0 && targa <= 90){
+				printf("Codice valido associato %d : %d.\n", getpid(), targa);
+			}
+
+			exit(0); 
+		} else {
+			wait(&status);
+			printf("%d : creato figlio %d\n", getpid(), pid[i]);
+
+			
+		}
+	}
+
+}#include <sys/wait.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <signal.h>
+
+
+
+void handerProcesso(int sig){
+	char c;
+	int processo;
+	int numero;
+
+	processo = getpid();
+	printf("Vuoi davvero uscire chiudere process %d [y/n]?\n", processo);
+	scanf("%d", &numero);
+	if(numero == processo){
+		printf("bye bye.\n");
+		exit(0);
+	}
+}
+
+int main(int argc, char * argv[]){
+
+	int N, status, i;
+	char c;
+
+	if(argv[1] == NULL){
+		printf("Sintassi sbagliata!\n");
+		exit(0);
+	}
+ N = atoi(argv[1]);
+ 	i = 0;
+	
+	while(i < N){
+		if(signal(SIGINT, handerProcesso)){
+			i++;
+			pause();
+		}
+	}
+
+	printf("Finito numero di cicli.\n");
+	return 0;
+}//COMANDO DA TERMINALE:
+// gcc nomeFile.c -o test
+// ./test
+
+#include<stdio.h>
+#include<stdlib.h>
+#include<unistd.h>
+
+int main(int argc, char* argv){
+    pid_t pid;
+    int n = 10;
+    if(argc == 1)
+        exit(1);
+    
+    if(n>10)
+        exit(1);
+    
+    if(pid<0)
+        exit(1);
+    
+    if(pid==0){
+        int targa = atoi(argv[i]);
+        if(targa>=1 && targa<=90){
+            printf("Codice valido generato dal processo figlio %d: %s", getpid(), argv[i]);
+            exit(0);
+        }
+        else{
+            exit(0);
+        }
+        else{
+            printf("Il padre %d ha gneerato il seguente figlio:%d", getpid(), pid);
+            wait(NULL);
+        }
+    }
+        
+}
+#include<stdio.h>
+#include<stdlib.h>
+#include<unistd.h>
+#include <sys/wait.h>
+int main(void){
+    
+    pid_t pid;
+    pid = fork();
+    int status;
+    
+    if(pid<0){
+        printf("fork");
+        exit(2);
+    }
+    if(pid==0){
+        printf("%d %d\n", getpid(), getppid());
+        exit(24);
+    }
+    else{
+        pid = wait (&status);
+        printf("il pid del figlio è %d, e lo stato è %d\n", pid, WEXISTATUS(status));
+    }
+}
+#include<stdio.h>
+#include<stdlib.h>
+#include<unistd.h>
+
+int main(int arg, char *argv[]){
+    
+    pid_p pid;
+    
+    if(argc==1){
+        printf("Sintassi errata\n");
+        exit(1);
+    }
+   
+
+}
+#include<stdio.h>
+#include<stdlib.h>
+#include<unistd.h>
+
+int main(void){
+    
+    pid_t pid;
+    
+    for(int i =0;i<10;i++){
+        pid=fork();
+        
+        if(pid<0){
+            printf("fork");
+            exit(2);
+        }
+        if(pid==0){
+            sleep(1);
+            printf("Figlio: %d\n", i+1);
+            sleep(1);
+            exit(101+i);
+        }
+    }
+        for(int i=0;i<10;i++){
+            int status;
+            pid = wait(&status);
+            printf("Terminato processo con numero:%d\n", WEXITSTATUS(status));
+            
+        }
+
+}
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/wait.h>
+
+#define NUM 10
+
+int main() {
+	int i, pid;
+
+	//genera 10 processi
+	for(i=0; i<NUM; i++) {
+		pid = fork();
+
+		if(pid < 0) {
+			perror("fork");
+			exit(0);
+		}
+
+		if(pid == 0) {
+			sleep(1);
+			printf("sono il processo numero %d con pid %d\n", i +1, getpid());
+			sleep(1);
+			exit(101+i);
+		}
+
+		else {
+			sleep(1);
+			printf("sono il processo padre e ho generato il figlio %d con pid %d\n", i+1, pid);
+			sleep(1);
+		}
+
+	}
+
+	for(i=0; i<NUM; i++){
+		int status;
+		wait(&status);
+		printf("status %d\n", status);
+		printf("&status %p\n", &status);
+		printf("Terminato processo %d\n", WEXITSTATUS(status));
+	}
+
+}#include <stdlib.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <signal.h>
+#include <sys/wait.h>
+
+//si creano  due variabili globali
+pid_t pid;
+int counter = 0;
+
+//Questo handler incrementa counter di 1 e stampa il valore di counter
+void handler1(int sig) {
+	//somma +1 a counter e stampa il valore di counter
+	counter++;
+	printf("H1 counter = %d\n", counter);
+
+	//viene mandato un segnale al processo che ha un certo pid (pid)
+	//il cui segnale è proprio SIGUSR1
+	kill(pid, SIGUSR1);
+}
+
+//Questo handler incrementa il counter di 3 e stampa il suo valore
+void handler2(int sig) {
+	counter = counter + 3;
+	printf("H2 counter = %d\n", counter);
+	exit(0);
+}
+
+int main() {
+	//si crea una variabile pid e una int
+	pid_t p;
+	int status;
+
+	//il processo padre invoca la funzione signal() e cattura il 
+	//segnale SIGUSR1 attivando handler1
+	signal(SIGUSR1, handler1);
+
+	//si genera il processo figlio
+	pid = fork();
+
+	if(pid == 0) {
+		/*il processo figlio invoca la funzione signal()
+		e cattura il segnale SIGUSR1 attivando questa volta 
+		handler2*/
+		signal(SIGUSR1, handler2);
+
+		//il processo figlio manda al processo padre (getppid())
+		//il segnale SIGUSR1
+		kill(getppid(), SIGUSR1);
+
+		while(1); // perche sta cosa dio bono?!?!?!?!?!?
+	}
+
+	//il processo padre sta aspettando che il processo figlio termini
+	//la sua esecuzione
+	if(p = wait(&status)>0) {
+		//somma +4 a counter e stampa il suo valore
+		sleep(4);
+		counter = counter + 4;
+		printf("counter = %d\n", counter);
+	}
+}#include <stdlib.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <signal.h>
+#include <sys/wait.h>
+
+//handler che cattura il segnale
+void handler(int sig) {
+	//si crea una variabile char
+	char c;
+
+	/*si utilizza la funzione signal() ed il segnale sig, passato come
+	parametro, dovrà essere ignorato da SIG_IGN.
+	il fatto che si faccia CTRL+C la prima volta inftti, dovrà essere
+	ignorato.
+	Se non fosse ignorato, interromperebbe l'esecuzione. Una volta che
+	è stato ignorato, subito dopo verra fatta la stampa*/
+	signal(sig, SIG_IGN);
+
+	/*stampa il messaggio in cui chiede se, dopo la prima volta che 
+	si è premuto CTRL+C, ci si fosse sbagliati*/
+	printf("te sei sbagliato?[y/n]\n");
+
+	c = getchar();
+	if(c == 'n' || c == 'N')
+		exit(0);
+	/*altrimenti viene ripristinato quella che è la cattura del
+	segnale. per cui CTRL+C non deve essere più ignorato, bensi
+	nel caso in cui venga richiamato SIGINT bisognerebbe richiamare
+	il vecchi handler*/
+	else
+		signal(SIGINT, handler);
+
+}
+
+int main() {
+	/*si invoca la funzione per catturare il segnale SIGINT
+	la quale attiverà l'handler una volta generato il segnale*/
+	signal(SIGINT, handler);
+
+	while(1) {
+		printf("nope\n");
+		pause();
+	}
+}#include<stdio.h>
+#include<stdlib.h>
+#include<unistd.h>
+
+int main(void){
+    
+    pid_t pid;
+    pid = fork();
+    
+    if(pid<0){
+        perror("fork");
+        exit(2);
+    }
+    
+    if(pid==0){
+        printf("Sono il processo figlio\n");
+        exit(0);
+    }
+    else{
+        printf("Sono il processo padre\n");
+        exit(0);
+    }
+
+}
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/wait.h>
+
+int main(int argc, char* argv[]){
+    pid_t pid;
+    int status = 0;
+    
+    if(argc==1)
+        exit(1);
+    
+    for(int i=1;i<argc;i++){
+        pid = fork();
+        if(pid==0){
+            if(atoi(argv[i])<=0 && atoi(argv[i])>=90){
+                printf("Codice valido associato al figlio %d: %s", getpid(), argv[i]);
+                exit(0);
+            }
+            else
+                exit(0);
+        }
+            else{
+                pid = wait(&status);
+                printf("%d ha creato %d", pid, getpid());
+                WEXISTATUS(status);
+            }
+    }
+}
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+typedef char Stringa[30];
+
+typedef struct {
+    Stringa nome;
+    int flag;
+} record_bin;
+
+
+int creaBinario (Stringa nome_file, Stringa frutto){
+    int fg, count;
+    Stringa nome, f1, f2, f3;
+    FILE* fp = fopen(nome_file,"r");
+    FILE* fp2 = fopen("frutto_preferito.dat","ab");
+    
+    while (!feof(fp)) {
+        fscanf (fp, "%s %s %s %s\n", nome, f1, f2, f3);
+        record_bin rb;
+        fg = (strcmp(frutto,f1)==0) || (strcmp(frutto,f2)==0) || (strcmp(frutto,f3)==0);
+        
+        if (fg) count++;
+        
+        strcpy(rb.nome, nome);
+        rb.flag = fg;
+        
+        fwrite(&rb, 1, sizeof(record_bin), fp2);
+        
+    } 
+    
+    fclose(fp);
+    fclose(fp2);
+    
+    return count;
+    
+}
+
+void leggibinario(){
+    FILE* fp = fopen("frutto_preferito.dat","rb");
+    
+    while (!feof(fp)) {
+        record_bin rb;
+        fread(&rb, 1, sizeof(record_bin), fp);
+        printf("%s %d\n",rb.nome,rb.flag);
+        
+    }
+    
+    
+    fclose(fp);
+}
+        
+        
+int main(void) {
+    creaBinario("persone_frutta.txt","pera");
+    leggibinario();
+    exit(0);
+
+       }#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+typedef char Stringa[30];
+
+typedef struct {
+    Stringa nome;
+    float media;
+} record_binario;
+
+void creaBinarioNegativo() {
+    FILE *fp = fopen("nomi.txt", "r");
+    FILE *fp2 = fopen("persone.dat", "wb");
+
+    Stringa nome;
+
+    if (fp == NULL) {
+        printf("file non esiste\n");
+        exit(0);
+    }
+
+    while (!feof(fp)) {
+        int count = 0;
+        int somma = 0;
+        int a1, a2, a3 = 0;
+        fscanf(fp, "%s %d %d %d\n", nome, &a1, &a2, &a3);
+
+        if (a1 < 0) {
+            somma += a1;
+            count++;
+        }
+
+        if (a2 < 0) {
+            somma += a2;
+            count++;
+        }
+
+        if (a3 < 0) {
+            somma += a3;
+            count++;
+        }
+
+        if (count > 0) {
+            record_binario rb;
+            strcpy(rb.nome, nome);
+            rb.media = (float) (somma / count);
+            fwrite(&rb, sizeof(rb), 1, fp2);
+        }
+    }
+
+    fclose(fp);
+    fclose(fp2);
+}
+
+void leggiBinario() {
+    FILE *fp = fopen("persone.dat", "rb");
+    if (fp == NULL) {
+        printf("file non esiste\n");
+        exit(0);
+    }
+    printf("\nSTAMPA\n\n\n");
+    while (!feof(fp)) {
+    
+        record_binario rb;
+        fread(&rb, sizeof(rb), 1, fp);
+        printf("%s %.2f\n", rb.nome, rb.media);
+    }
+
+    fclose(fp);
+}
+
+int main() {
+    creaBinarioNegativo();
+    leggiBinario();
+    return 0;
+}#include <stdio.h>
+#include <string.h>
+
+typedef char string[30];
+
+string voti[11] = {"0","1","2","3","4","5","6","7","8","9","10"};
+
+//inserisci un nome e un voto e ritorna il numero di elementi
+int inserisci(string nome, int voto, string nomeFile) {
+	int numelem = 0;
+	string temp;
+
+	if((voto<=10) && (voto>=0)) {
+		FILE* fp = fopen(nomeFile, "a+");
+		fprintf(fp, "%s %d\n",nome, voto);
+
+		//conta il numero di elementi nel file
+		fseek(fp, 0, SEEK_SET);
+		while(!feof(fp)) {
+			fscanf(fp, "%s %d\n", temp, &voto);
+			numelem++;
+		}
+
+		fclose(fp);
+	}
+
+	else
+		numelem = -1;  // errore di inserimento
+
+	return numelem;
+}
+
+//cambia il voto all'occorrenza col nome e voto corrente specificati
+void cambiaVoto(string nome, int vecchio_voto, int nuovo_voto, string nomeFile) {
+	long pos;
+	int voto;
+	int test = 0;
+	string temp;
+
+	if((nuovo_voto<=10)&&(nuovo_voto>=0)) {
+		FILE* fp = fopen(nomeFile, "r+");
+
+		while((!feof(fp))&&(!test)) {
+			pos = ftell(fp);
+
+			if(fscanf(fp, "%s %d\n", temp, &voto) !=EOF)
+				if(strcmp(nome, temp)==0 && voto==vecchio_voto) {
+					fseek(fp, pos, SEEK_SET);
+					fprintf(fp, "%s %d\n", nome, nuovo_voto);
+					test = 1;
+				}
+		}
+
+		fclose(fp);
+	}
+	else 
+		printf("errore specifica voto\n");
+}
+
+//ritorna il valore max
+int maxVoto(string nomeFile) {
+	int voto, max = 0;
+	string nome;
+	FILE* fp = fopen(nomeFile, "r");
+	if(!fp)
+		return -1; // errore lettura del file
+	while(!feof(fp) && max<10) {
+		fscanf(fp, "%s %d\n", nome, &voto);
+		if(voto>max)
+			max = voto;
+	}
+	fclose(fp);
+	return max;
+}
+
+//crea file piccoli
+void creaFile(string nomeFile) {
+	string temp;
+	int voto;
+
+	FILE* fp = fopen(nomeFile, "r");
+	while(!feof(fp)) {
+		fscanf(fp, "%s %d\n", temp, &voto);
+		string newFile;
+		strpy(newFile, nomeFile);
+		strcat(newFile, "-");
+		strcat(newFile, voti[voto]);
+		strcat(newFile, ".txt");
+		inserisci(temp, voto, newFile);
+	}
+}
